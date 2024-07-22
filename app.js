@@ -4,6 +4,7 @@ const constants = require("./constants");
 const cors = require("cors");
 const { authRouter } = require("./backend/routes/auth.routes");
 const { tweetRouter } = require("./backend/routes/tweets.routes");
+const userRouter = require("./backend/routes/users.routes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/tweets", tweetRouter);
 
 app.get("/", (req, res) => {
