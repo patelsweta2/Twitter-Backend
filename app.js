@@ -11,7 +11,9 @@ const { tweetRouter } = require("./backend/routes/tweets.routes");
 
 const app = express();
 
-const ALLOWED_URLS = ["http://localhost:5173"];
+const ALLOWED_URLS = [
+  "https://patelsweta2.github.io/Twittter-MERN-STACK-FrontEnd/",
+];
 console.log(ALLOWED_URLS);
 
 const corsOptions = {
