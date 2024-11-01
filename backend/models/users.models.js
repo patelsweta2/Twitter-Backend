@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: "",
     },
+    // name: {
+    //   type: String,
+    //   required: true,
+    //   default: "",
+    // },
     email: {
       type: String,
       required: true,
@@ -65,9 +70,11 @@ userSchema.set("toJSON", {
 userSchema.pre("save", async function (next) {
   try {
     const user = this;
+
     if (!user.isModified("password")) {
       return next();
     }
+
     user.password = await bcrypt.hash(user.password, 10);
   } catch (error) {
     console.log(error);
@@ -82,6 +89,7 @@ userSchema.statics.findByCredentials = async function (
     const user = await userModel.findOne({
       $or: [{ userName }, { email }],
     });
+
     return user;
   } catch (error) {
     console.error("Error finding user:", error);
@@ -101,6 +109,7 @@ userSchema.statics.findByUserName = async (userName = "") => {
         { path: "followings", select: "-savedTweets -email" },
       ])
       .select("-savedTweets -email");
+
     return user;
   } catch (error) {
     console.error("Error finding user:", error);
@@ -114,19 +123,23 @@ userSchema.methods.generateAccessToken = async function () {
     userName: this.userName,
     email: this.email,
   };
+
   const accessToken = await jwt.sign(payload, constants.ACCESS_TOKEN_SECRET, {
     expiresIn: constants.ACCESS_TOKEN_EXPIRY,
   });
+
   return accessToken;
 };
 
-userSchema.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = async function () {
   const payload = {
     id: this._id,
   };
+
   const accessToken = await jwt.sign(payload, constants.REFRESH_TOKEN_SECRET, {
     expiresIn: constants.REFRESH_TOKEN_EXPIRY,
   });
+
   return accessToken;
 };
 

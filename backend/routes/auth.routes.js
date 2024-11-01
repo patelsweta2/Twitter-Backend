@@ -1,7 +1,7 @@
 const express = require("express");
 const {
-  registerController,
   loginController,
+  registerController,
   logoutController,
   refreshAccessTokenController,
   resetPasswordController,
@@ -9,8 +9,8 @@ const {
 
 const authRouter = express.Router();
 
-authRouter.route("/register").post(registerController);
 authRouter.route("/login").post(loginController);
+authRouter.route("/register").post(registerController);
 authRouter.route("/logout").post(logoutController);
 authRouter.route("/refresh").get(refreshAccessTokenController);
 authRouter.route("/reset").patch(resetPasswordController);

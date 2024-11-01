@@ -5,7 +5,8 @@ const connectDB = async () => {
     console.log(`database connected: ${conn.connection.host}`);
   } catch (error) {
     console.log(`DB connection Error: ${error.message}`);
-    process.exist(1);
+    process.exit(1);
   }
 };
+
 module.exports = connectDB;

@@ -15,10 +15,12 @@ const getAllUsersController = asyncHandler(async (req, res) => {
         tweetsCount: { $size: "$tweets" },
       }
     );
+
     if (!users) {
       res.status(404);
       throw new Error("No Users found");
     }
+
     res.status(200).json(users);
   } catch (error) {
     console.log(error);
@@ -39,10 +41,12 @@ const getCurrUserProfileController = asyncHandler(async (req, res) => {
         options: { sort: { createdAt: -1 } },
       },
     ]);
+
   if (!user) {
     res.status(404);
     throw new Error("Profile not found.");
   }
+
   res.status(200).json(user);
 });
 
@@ -61,7 +65,7 @@ const getUserByIdController = asyncHandler(async (req, res) => {
         _id: 1,
         userName: 1,
         followersCount: { $size: "$followers" },
-        followingsCount: { $size: "$followings" },
+        followingCount: { $size: "$followings" },
         tweetsCount: { $size: "$tweets" },
       },
     },
@@ -70,6 +74,7 @@ const getUserByIdController = asyncHandler(async (req, res) => {
       if (!result || result.length === 0) {
         return res.status(404).json({ message: "User not found" });
       }
+
       return res.json(result[0]); // Assuming there's only one user with the given ID
     })
     .catch((err) => {
@@ -80,18 +85,21 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 
 const getUserByNameController = asyncHandler(async (req, res) => {
   const userName = req.params.userName;
+
   const user = await User.findByUserName(userName);
 
   if (!user) {
     res.status(404);
-    throw new Error(`${userName} user not found`);
+    throw new Error(`${userName} user not found.`);
   }
+
   res.status(200).json(user);
 });
 
 const followUserController = asyncHandler(async (req, res) => {
   const currUserId = req.user.id;
   const { userId } = req.body;
+
   const userToFollow = await User.findById(userId);
 
   // already following the user, Therefore unfollow the user
@@ -104,9 +112,10 @@ const followUserController = asyncHandler(async (req, res) => {
     $addToSet: { followings: userId },
   });
 
-  await User.findByIdAndUpdate(currUserId, {
+  await User.findByIdAndUpdate(userId, {
     $addToSet: { followers: currUserId },
   });
+
   return res
     .status(200)
     .json({ message: "You are now following the user", isFollowing: true });
@@ -119,7 +128,7 @@ const unFollowUserController = asyncHandler(async (req, res) => {
   const currUser = await User.findById(currUserId);
 
   if (!currUser?.followings?.includes(userId)) {
-    return res.status(400).json({ message: "user not found in followings" });
+    return res.status(400).json({ message: "User not found in followings" });
   }
 
   await User.findByIdAndUpdate(
@@ -131,7 +140,6 @@ const unFollowUserController = asyncHandler(async (req, res) => {
       new: true,
     }
   );
-
   await User.findByIdAndUpdate(
     userId,
     {
@@ -141,6 +149,7 @@ const unFollowUserController = asyncHandler(async (req, res) => {
       new: true,
     }
   );
+
   res
     .status(200)
     .json({ message: "You have unfollowed the user", isFollowing: false });
@@ -148,13 +157,15 @@ const unFollowUserController = asyncHandler(async (req, res) => {
 
 const deleteUserController = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const deleteUser = await User.findByIdAndDelete(userId);
 
-  if (!deleteUser) {
+  const deletedUser = await User.findByIdAndDelete(userId);
+
+  if (!deletedUser) {
     res.status(404);
     throw new Error("User does not exist");
   }
-  res.status(200).json(deleteUser);
+
+  res.status(200).json(deletedUser);
 });
 
 const searchUserByNameController = asyncHandler(async (req, res) => {
@@ -166,9 +177,7 @@ const searchUserByNameController = asyncHandler(async (req, res) => {
   if (userName != "") {
     try {
       const searchResults = await User.find(
-        {
-          $or: [{ userName }, { fullName: userName }],
-        },
+        { $or: [{ userName }, { fullName: userName }] },
         {
           _id: 1,
           userName: 1,
@@ -191,11 +200,11 @@ const searchUserByNameController = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAllUsersController,
-  getCurrUserProfileController,
   getUserByIdController,
   getUserByNameController,
-  unFollowUserController,
   deleteUserController,
-  followUserController,
   searchUserByNameController,
+  followUserController,
+  unFollowUserController,
+  getCurrUserProfileController,
 };

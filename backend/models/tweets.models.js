@@ -6,14 +6,12 @@ const tweetSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userName: {
-      type: String,
-      default: "",
-    },
+    userName: { type: String, default: "" },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+
     likedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,4 +21,5 @@ const tweetSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 module.exports = mongoose.model("Tweet", tweetSchema);

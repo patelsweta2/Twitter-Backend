@@ -2,6 +2,7 @@ const constants = require("../../constants");
 
 const notFoundError = (req, res, next) => {
   const error = new Error(`Not found - ${req.originalUrl}`);
+
   next(error);
   res.status(404);
 };

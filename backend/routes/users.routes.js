@@ -2,13 +2,13 @@ const express = require("express");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 const {
   getAllUsersController,
-  getCurrUserProfileController,
-  getUserByIdController,
-  getUserByNameController,
-  unFollowUserController,
-  followUserController,
   deleteUserController,
+  getUserByIdController,
   searchUserByNameController,
+  getUserByNameController,
+  followUserController,
+  getCurrUserProfileController,
+  unFollowUserController,
 } = require("../controllers/users.controllers");
 
 const userRouter = express.Router();

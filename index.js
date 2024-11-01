@@ -12,5 +12,5 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.log("Error at index.js connectDB:", err);
+    console.log("ERROR at index.js connectDB:", err);
   });
